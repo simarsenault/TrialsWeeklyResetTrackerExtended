@@ -71,15 +71,15 @@ local function getCooldownInfo()
 	local cooldownInfo = {}
 	
 	--for each character
-	for characterId in pairs(TrialsWeeklyResetTrackerExtendedSavedVariables) do
-		cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables[characterId]["name"]] = {}
+	for characterId in pairs(TrialsWeeklyResetTrackerExtendedSavedVariables["characters"]) do
+		cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["name"]] = {}
 		
 		--for each quest saved to this character's cooldown data
-		for questId, lootTable in pairs(TrialsWeeklyResetTrackerExtendedSavedVariables[characterId]["quests"]) do
+		for questId, lootTable in pairs(TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["quests"]) do
 			--get and output the quest name
 			local questName = GetCompletedQuestInfo(questId)
 			
-			cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables[characterId]["name"]][questName] = {}
+			cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["name"]][questName] = {}
 
 			--for each coffer saved to this questId
 			for lootId, cooldownEnd in pairs(lootTable) do
@@ -88,9 +88,9 @@ local function getCooldownInfo()
 
 				--output message based on cooldown state
 				if cooldownEnd <= currentTime then
-					cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables[characterId]["name"]][questName][lootId] = 0
+					cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["name"]][questName][lootId] = 0
 				else
-					cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables[characterId]["name"]][questName][lootId] = cooldownEnd - currentTime
+					cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["name"]][questName][lootId] = cooldownEnd - currentTime
 				end
 			end
 		end
@@ -115,7 +115,7 @@ local function displayCooldownInfo()
 				if (cooldown <= 0) then
 					d("--"..itemLink..": available.")	
 				else
-					d("--"..itemLink..": "..secondsToCooldownString(cooldown))
+					d("--"..itemLink..": "..secondsToCooldownString(cooldown)..".")
 				end
 			end
 		end
@@ -174,10 +174,10 @@ local function updateCooldownInfo()
     --update cooldown info if difference is within acceptable margin
     if difference < TWRTE.MAX_DIFFERENCE then
         --ensure there is a place to save cooldown
-        TrialsWeeklyResetTrackerExtendedSavedVariables[TWRTE.characterId]["quests"][TWRTE.lastQuestId] = TrialsWeeklyResetTrackerExtendedSavedVariables[TWRTE.characterId]["quests"][TWRTE.lastQuestId] or {}
+        TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["quests"][TWRTE.lastQuestId] = TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["quests"][TWRTE.lastQuestId] or {}
 
         --save the current time plus one week for the cooldown
-        TrialsWeeklyResetTrackerExtendedSavedVariables[TWRTE.characterId]["quests"][TWRTE.lastQuestId][TWRTE.lastLootId] = GetTimeStamp() + TWRTE.WEEK_IN_SECONDS
+        TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["quests"][TWRTE.lastQuestId][TWRTE.lastLootId] = GetTimeStamp() + TWRTE.WEEK_IN_SECONDS
     end
 end
 
@@ -221,8 +221,10 @@ local function addonLoaded(eventCode, addonName)
     --setup saved variables
     TrialsWeeklyResetTrackerExtendedSavedVariables = TrialsWeeklyResetTrackerExtendedSavedVariables or {}
     TWRTE.data = TrialsWeeklyResetTrackerExtendedSavedVariables
-    TWRTE.data[TWRTE.characterId] = TWRTE.data[TWRTE.characterId] or {}
-	TWRTE.data[TWRTE.characterId]["quests"] = TWRTE.data[TWRTE.characterId]["quests"] or {}
-	TWRTE.data[TWRTE.characterId]["name"] = TWRTE.data[TWRTE.characterId]["name"] or TWRTE.characterName
+	TWRTE.data["version"] = TWRTE.data["version"] or 0
+	TWRTE.data["characters"] = TWRTE.data["characters"] or {}
+    TWRTE.data["characters"][TWRTE.characterId] = TWRTE.data["characters"][TWRTE.characterId] or {}
+	TWRTE.data["characters"][TWRTE.characterId]["quests"] = TWRTE.data["characters"][TWRTE.characterId]["quests"] or {}
+	TWRTE.data["characters"][TWRTE.characterId]["name"] = TWRTE.characterName
 end
 EVENT_MANAGER:RegisterForEvent("TWRTE_ADDON_LOADED", EVENT_ADD_ON_LOADED, addonLoaded)
