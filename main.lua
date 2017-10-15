@@ -37,15 +37,6 @@ TWRTE.lootIds = {
 --saved data
 TWRTE.data = nil
 
---control data
-local debug = false
-
-local function toggleDebug()
-    debug = not debug
-    d("Debug set to "..tostring(debug))
-end
-SLASH_COMMANDS["/twrtedebug"] = toggleDebug
-
 --turn a number representing seconds into a human readable string
 --ex: 123456 == 1d 10h 17m 36s
 local function secondsToCooldownString(seconds)
@@ -70,29 +61,21 @@ local function secondsToCooldownString(seconds)
     return cooldownString
 end
 
---output cooldown info for current character with slash command "/twrte"
---sample output:
---
---Assaulting the Citadel
---  - [Warrior's Dulled Coffer] is available!
---Into the Maw
---  - [Dro-m'Athra's Burnished Coffer] is available!
---  - [Dro-m'Athra's Shining Coffer] is available in 1d 10h 17m 36s.
-local function getCooldownInfo()
+local function getCooldownInfo()	
 	--for each character
 	for characterId in pairs(TrialsWeeklyResetTrackerExtendedSavedVariables) do
-		local characterNamePrinter = false
+		local characterNamePrinted = false
 		
 		--for each quest saved to this character's cooldown data
 		for questId, lootTable in pairs(TrialsWeeklyResetTrackerExtendedSavedVariables[characterId]["quests"]) do
-			if not characterNamePrinter then
+			if not characterNamePrinted then
 				d("Character: "..TrialsWeeklyResetTrackerExtendedSavedVariables[characterId]["name"])
-				characterNamePrinter = true
+				characterNamePrinted = true
 			end
 			
 			--get and output the quest name
 			local questName = GetCompletedQuestInfo(questId)
-			d(".."..questName)
+			d("-- "..questName)
 
 			--for each coffer saved to this questId
 			for lootId, cooldownEnd in pairs(lootTable) do
@@ -102,17 +85,21 @@ local function getCooldownInfo()
 
 				--output message based on cooldown state
 				if cooldownEnd <= currentTime then
-					d("...."..itemLink.." is available!")
+					d("---- "..itemLink.." is available!")
 				else
 					local difference = cooldownEnd - currentTime
 
-					d("...."..itemLink.." will be available in "..secondsToCooldownString(difference))
+					d("---- "..itemLink..": "..secondsToCooldownString(difference))
 				end
 			end
 		end
 	end	
 end
-SLASH_COMMANDS["/twrte"] = getCooldownInfo
+
+local function displayCooldownInfo()
+	getCooldownInfo()
+end
+SLASH_COMMANDS["/twrte"] = displayCooldownInfo
 
 local function updateCooldownInfo()
     --questIds and their matching lootIds
@@ -191,9 +178,6 @@ EVENT_MANAGER:RegisterForEvent("TWRTE_LOOT_RECEIVED", EVENT_LOOT_RECEIVED, lootR
 
 --triggered on quest complete or abandon
 local function questRemoved(eventCode, isCompleted, journalIndex, questName, zoneIndex, poiIndex, questId)
-    --for getting a new trial quest
-    if debug then d("questId: "..questId) end
-
     --only continue if quest is complete
     if not isCompleted then return end
 
