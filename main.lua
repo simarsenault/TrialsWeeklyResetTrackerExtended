@@ -61,43 +61,65 @@ local function secondsToCooldownString(seconds)
     return cooldownString
 end
 
+local function tablelength(T)
+  local count = 0
+  for _ in pairs(T) do count = count + 1 end
+  return count
+end
+
 local function getCooldownInfo()	
+	local cooldownInfo = {}
+	
 	--for each character
 	for characterId in pairs(TrialsWeeklyResetTrackerExtendedSavedVariables) do
-		local characterNamePrinted = false
+		cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables[characterId]["name"]] = {}
 		
 		--for each quest saved to this character's cooldown data
 		for questId, lootTable in pairs(TrialsWeeklyResetTrackerExtendedSavedVariables[characterId]["quests"]) do
-			if not characterNamePrinted then
-				d("Character: "..TrialsWeeklyResetTrackerExtendedSavedVariables[characterId]["name"])
-				characterNamePrinted = true
-			end
-			
 			--get and output the quest name
 			local questName = GetCompletedQuestInfo(questId)
-			d("-- "..questName)
+			
+			cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables[characterId]["name"]][questName] = {}
 
 			--for each coffer saved to this questId
 			for lootId, cooldownEnd in pairs(lootTable) do
-				--create itemLink for output and get current timestamp for comparison
 				local itemLink = "|H1:item:"..lootId..":0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h"
 				local currentTime = GetTimeStamp()
 
 				--output message based on cooldown state
 				if cooldownEnd <= currentTime then
-					d("---- "..itemLink.." is available!")
+					cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables[characterId]["name"]][questName][lootId] = 0
 				else
-					local difference = cooldownEnd - currentTime
-
-					d("---- "..itemLink..": "..secondsToCooldownString(difference))
+					cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables[characterId]["name"]][questName][lootId] = cooldownEnd - currentTime
 				end
 			end
 		end
 	end	
+	
+	return cooldownInfo
 end
 
 local function displayCooldownInfo()
-	getCooldownInfo()
+	local cooldownInfo = getCooldownInfo()
+	
+	for characterName in pairs(cooldownInfo) do
+		if tablelength(cooldownInfo[characterName]) > 0 then
+			d(characterName)
+		end
+		
+		for questName in pairs(cooldownInfo[characterName]) do
+			d("-"..questName)
+			for itemId, cooldown in pairs(cooldownInfo[characterName][questName]) do
+				local itemLink = "|H1:item:"..itemId..":0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h"
+				
+				if (cooldown <= 0) then
+					d("--"..itemLink..": available.")	
+				else
+					d("--"..itemLink..": "..secondsToCooldownString(cooldown))
+				end
+			end
+		end
+	end
 end
 SLASH_COMMANDS["/twrte"] = displayCooldownInfo
 
