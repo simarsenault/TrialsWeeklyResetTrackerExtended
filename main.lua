@@ -67,6 +67,18 @@ local function tablelength(T)
   return count
 end
 
+local function getTrialName(questId)
+	local lookup = {
+        [5087] = "Hel Ra Citadel",
+        [5102] = "Atherian Archive",
+        [5171] = "Sanctum Ophidia",
+        [5352] = "Maw of Lorkaj",
+        [5894] = "Halls of Fabrication"
+    }
+	
+	return lookup[questId]
+end
+
 local function getCooldownInfo()	
 	local cooldownInfo = {}
 	
@@ -77,9 +89,9 @@ local function getCooldownInfo()
 		--for each quest saved to this character's cooldown data
 		for questId, lootTable in pairs(TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["quests"]) do
 			--get and output the quest name
-			local questName = GetCompletedQuestInfo(questId)
+			local trialName = getTrialName(questId)
 			
-			cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["name"]][questName] = {}
+			cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["name"]][trialName] = {}
 
 			--for each coffer saved to this questId
 			for lootId, cooldownEnd in pairs(lootTable) do
@@ -88,9 +100,9 @@ local function getCooldownInfo()
 
 				--output message based on cooldown state
 				if cooldownEnd <= currentTime then
-					cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["name"]][questName][lootId] = 0
+					cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["name"]][trialName][lootId] = 0
 				else
-					cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["name"]][questName][lootId] = cooldownEnd - currentTime
+					cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["name"]][trialName][lootId] = cooldownEnd - currentTime
 				end
 			end
 		end
@@ -107,15 +119,14 @@ local function displayCooldownInfo()
 			d(characterName)
 		end
 		
-		for questName in pairs(cooldownInfo[characterName]) do
-			d("-"..questName)
-			for itemId, cooldown in pairs(cooldownInfo[characterName][questName]) do
+		for trialName in pairs(cooldownInfo[characterName]) do
+			for itemId, cooldown in pairs(cooldownInfo[characterName][trialName]) do
 				local itemLink = "|H1:item:"..itemId..":0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h"
 				
-				if (cooldown <= 0) then
-					d("--"..itemLink..": available.")	
+				if cooldown <= 0 then
+					d("- "..trialName.." ("..itemLink.."): available.")
 				else
-					d("--"..itemLink..": "..secondsToCooldownString(cooldown)..".")
+					d("- "..trialName.." ("..itemLink.."): "..secondsToCooldownString(cooldown)..".")
 				end
 			end
 		end
@@ -221,7 +232,7 @@ local function addonLoaded(eventCode, addonName)
     --setup saved variables
     TrialsWeeklyResetTrackerExtendedSavedVariables = TrialsWeeklyResetTrackerExtendedSavedVariables or {}
     TWRTE.data = TrialsWeeklyResetTrackerExtendedSavedVariables
-	TWRTE.data["version"] = TWRTE.data["version"] or 0
+	TWRTE.data["version"] = TWRTE.data["version"] or 1
 	TWRTE.data["characters"] = TWRTE.data["characters"] or {}
     TWRTE.data["characters"][TWRTE.characterId] = TWRTE.data["characters"][TWRTE.characterId] or {}
 	TWRTE.data["characters"][TWRTE.characterId]["quests"] = TWRTE.data["characters"][TWRTE.characterId]["quests"] or {}
