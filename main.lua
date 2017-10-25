@@ -196,6 +196,8 @@ end
 local function lootReceived(eventCode, receivedBy, itemName, quantity, itemSound, lootType, receivedBySelf, isPickpocketLoot, questItemIconPath, itemId)
     --only continue if the event was triggered for the player
     if not receivedBySelf then return end
+	
+	TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["lastLootedItemId"] = itemId
 
     --if it is an item we're interested in
     if TWRTE.lootIds[itemId] then
@@ -213,6 +215,12 @@ EVENT_MANAGER:RegisterForEvent("TWRTE_LOOT_RECEIVED", EVENT_LOOT_RECEIVED, lootR
 local function questRemoved(eventCode, isCompleted, journalIndex, questName, zoneIndex, poiIndex, questId)
     --only continue if quest is complete
     if not isCompleted then return end
+	
+	local questName = GetCompletedQuestInfo(questId)
+	
+	TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["lastCompletedQuest"] = TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["lastCompletedQuest"] or {}
+	TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["lastCompletedQuest"]["id"] = questId
+	TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["lastCompletedQuest"]["name"] = questName
 
     --if it is a quest we're interested in
     if TWRTE.questIds[questId] then
@@ -226,13 +234,29 @@ local function questRemoved(eventCode, isCompleted, journalIndex, questName, zon
 end
 EVENT_MANAGER:RegisterForEvent("TWRTE_QUEST_REMOVED", EVENT_QUEST_REMOVED, questRemoved)
 
+local function migrateVersion1ToVersion2(data)
+	for characterId in pairs(data["characters"]) do
+		data["characters"][characterId]["lastCompletedQuest"] = {}
+		data["characters"][characterId]["lastCompletedQuest"]["id"] = -1
+		data["characters"][characterId]["lastCompletedQuest"]["name"] = ""
+		data["characters"][characterId]["lastLootedItemId"] = -1
+	end
+	
+	data["version"] = 2
+end
+
 local function addonLoaded(eventCode, addonName)
     if addonName ~= "TrialsWeeklyResetTrackerExtended" then return end
 
     --setup saved variables
     TrialsWeeklyResetTrackerExtendedSavedVariables = TrialsWeeklyResetTrackerExtendedSavedVariables or {}
     TWRTE.data = TrialsWeeklyResetTrackerExtendedSavedVariables
-	TWRTE.data["version"] = TWRTE.data["version"] or 1
+	TWRTE.data["version"] = TWRTE.data["version"] or 2
+	
+	if TWRTE.data["version"] == 1 then
+		migrateVersion1ToVersion2(TWRTE.data)
+	end
+	
 	TWRTE.data["characters"] = TWRTE.data["characters"] or {}
     TWRTE.data["characters"][TWRTE.characterId] = TWRTE.data["characters"][TWRTE.characterId] or {}
 	TWRTE.data["characters"][TWRTE.characterId]["quests"] = TWRTE.data["characters"][TWRTE.characterId]["quests"] or {}

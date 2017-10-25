@@ -1,7 +1,7 @@
 ## Title: Trials Weekly Reset Tracker Extended
 ## Author: simarsenault
-## Version: 1.0.0
-## APIVersion: 100020
+## Version: 1.1.0
+## APIVersion: 100021
 ## SavedVariables: TrialsWeeklyResetTrackerExtendedSavedVariables
 
 main.lua
