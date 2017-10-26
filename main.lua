@@ -20,6 +20,7 @@ TWRTE.questIds = {
     [5171] = "",
     [5352] = "",
     [5894] = "",
+	[6090] = "",
 }
 TWRTE.lootIds = {
     [87703] = "",
@@ -32,6 +33,8 @@ TWRTE.lootIds = {
     [87706] = "",
     [94089] = "",
     [94090] = "",
+	[134585] = "",
+	[134586] = "",
 }
 
 --saved data
@@ -73,7 +76,8 @@ local function getTrialName(questId)
         [5102] = "Atherian Archive",
         [5171] = "Sanctum Ophidia",
         [5352] = "Maw of Lorkaj",
-        [5894] = "Halls of Fabrication"
+        [5894] = "Halls of Fabrication",
+		[6090] = "Asylum Sanctorium"
     }
 	
 	return lookup[questId]
@@ -163,7 +167,12 @@ local function updateCooldownInfo()
         [5894] = {
             [126130] = "", --Fabricant's Burnished Coffer
             [126131] = "", --Fabricant's Shining Coffer
-        }
+        },
+		--Asylum Sanctorium, "Saint's Mercy"
+		[6090] = {
+			[134585] = "", --Saint's Beatified Coffer
+			[134586] = "", --Saint's Sanctified Coffer
+		}
     }
 
     --only continue if both quest and loot ids are initialized
