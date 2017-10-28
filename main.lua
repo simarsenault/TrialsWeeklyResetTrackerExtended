@@ -115,7 +115,7 @@ local function getCooldownInfo()
 	return cooldownInfo
 end
 
-local function displayCooldownInfo()
+function TWRTE_displayCooldownInfoInChat()
 	local cooldownInfo = getCooldownInfo()
 	
 	for characterName in pairs(cooldownInfo) do
@@ -136,7 +136,7 @@ local function displayCooldownInfo()
 		end
 	end
 end
-SLASH_COMMANDS["/twrte"] = displayCooldownInfo
+SLASH_COMMANDS["/twrte"] = TWRTE_displayCooldownInfoInChat
 
 local function updateCooldownInfo()
     --questIds and their matching lootIds
@@ -256,6 +256,8 @@ end
 
 local function addonLoaded(eventCode, addonName)
     if addonName ~= "TrialsWeeklyResetTrackerExtended" then return end
+	
+	ZO_CreateStringId("SI_BINDING_NAME_TWRTE_DISPLAY_CHAT", "Display in chat")
 
     --setup saved variables
     TrialsWeeklyResetTrackerExtendedSavedVariables = TrialsWeeklyResetTrackerExtendedSavedVariables or {}
