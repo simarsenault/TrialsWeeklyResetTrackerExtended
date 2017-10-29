@@ -1,6 +1,6 @@
 ## Title: Trials Weekly Reset Tracker Extended
 ## Author: simarsenault
-## Version: 1.2.0
+## Version: 1.3.0
 ## APIVersion: 100021
 ## SavedVariables: TrialsWeeklyResetTrackerExtendedSavedVariables
 

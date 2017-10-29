@@ -1,3 +1,7 @@
+## 1.3.0 (2017-10-29)
+- Fixed a bug that would reset timer when it should not
+- Added logs for easier debugging
+
 ## 1.2.0 (2017-10-27)
 - Added key binding
 
