@@ -1,3 +1,6 @@
+## 1.3.1 (2017-10-29)
+- Fixed nil exception on coffer loot
+
 ## 1.3.0 (2017-10-29)
 - Fixed a bug that would reset timer when it should not
 - Added logs for easier debugging

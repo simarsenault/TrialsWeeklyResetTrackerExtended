@@ -138,6 +138,19 @@ function TWRTE_displayCooldownInfoInChat()
 end
 SLASH_COMMANDS["/twrte"] = TWRTE_displayCooldownInfoInChat
 
+local function logEvent(event)
+  if not TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["eventslog"]["config"]["enabled"] then return end
+
+  for i=TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["eventslog"]["config"]["amount"]-1,1,-1
+  do
+    if TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["eventslog"]["logs"][i] then
+      TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["eventslog"]["logs"][i+1] = TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["eventslog"]["logs"][i]
+    end
+  end
+
+  TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["eventslog"]["logs"][1] = event
+end
+
 local function updateCooldownInfo()
   --questIds and their matching lootIds
   local lookup = {
@@ -207,19 +220,6 @@ local function updateCooldownInfo()
     TWRTE.questIds[TWRTE.lastQuestId] = ""
     TWRTE.lastQuestId = nil
   end
-end
-
-local function logEvent(event)
-  if not TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["eventslog"]["config"]["enabled"] then return end
-
-  for i=TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["eventslog"]["config"]["amount"]-1,1,-1
-  do
-    if TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["eventslog"]["logs"][i] then
-      TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["eventslog"]["logs"][i+1] = TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["eventslog"]["logs"][i]
-    end
-  end
-
-  TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["eventslog"]["logs"][1] = event
 end
 
 --triggered when someone in the group loots something
