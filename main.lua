@@ -91,23 +91,17 @@ local function getCooldownInfo()
     cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["name"]] = {}
 
     --for each quest saved to this character's cooldown data
-    for questId, lootTable in pairs(TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["quests"]) do
+    for questId, cooldownEnd in pairs(TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["coffers"]) do
       --get and output the quest name
       local trialName = getTrialName(questId)
 
-      cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["name"]][trialName] = {}
+      local currentTime = GetTimeStamp()
 
-      --for each coffer saved to this questId
-      for lootId, cooldownEnd in pairs(lootTable) do
-        local itemLink = "|H1:item:"..lootId..":0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h"
-        local currentTime = GetTimeStamp()
-
-        --output message based on cooldown state
-        if cooldownEnd <= currentTime then
-          cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["name"]][trialName][lootId] = 0
-        else
-          cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["name"]][trialName][lootId] = cooldownEnd - currentTime
-        end
+      --output message based on cooldown state
+      if cooldownEnd <= currentTime then
+        cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["name"]][trialName] = 0
+      else
+        cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["name"]][trialName] = cooldownEnd - currentTime
       end
     end
   end
@@ -124,14 +118,12 @@ function TWRTE_displayCooldownInfoInChat()
     end
 
     for trialName in pairs(cooldownInfo[characterName]) do
-      for itemId, cooldown in pairs(cooldownInfo[characterName][trialName]) do
-        local itemLink = "|H1:item:"..itemId..":0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h"
+      local timerEnd = cooldownInfo[characterName][trialName]
 
-        if cooldown <= 0 then
-          d("- "..trialName.." ("..itemLink.."): available.")
-        else
-          d("- "..trialName.." ("..itemLink.."): "..secondsToCooldownString(cooldown)..".")
-        end
+      if timerEnd <= 0 then
+        d("- "..trialName..": available.")
+      else
+        d("- "..trialName..": "..secondsToCooldownString(timerEnd)..".")
       end
     end
   end
@@ -206,13 +198,13 @@ local function updateCooldownInfo()
 
   --update cooldown info if difference is within acceptable margin
   if difference < TWRTE.MAX_DIFFERENCE then
-    logEvent(GetTimeStamp()..": timer reset for quest "..TWRTE.lastQuestId.." and item "..TWRTE.lastLootId)
+    logEvent(GetTimeStamp()..": timer reset for quest "..TWRTE.lastQuestId.." (item "..TWRTE.lastLootId..")")
 
     --ensure there is a place to save cooldown
-    TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["quests"][TWRTE.lastQuestId] = TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["quests"][TWRTE.lastQuestId] or {}
+    TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["coffers"] = TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["coffers"] or {}
 
     --save the current time plus one week for the cooldown
-    TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["quests"][TWRTE.lastQuestId][TWRTE.lastLootId] = GetTimeStamp() + TWRTE.WEEK_IN_SECONDS
+    TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["coffers"][TWRTE.lastQuestId] = GetTimeStamp() + TWRTE.WEEK_IN_SECONDS
 
     --reset
     TWRTE.lootIds[TWRTE.lastLootId] = ""
@@ -288,6 +280,28 @@ local function migrateVersion2ToVersion3(data)
   data["version"] = 3
 end
 
+local function migrateVersion3ToVersion4(data)
+  for characterId in pairs(data["characters"]) do
+    data["characters"][characterId]["coffers"] = {}
+
+    for questId, lootTable in pairs(data["characters"][characterId]["quests"]) do
+      local longestTimer = 0
+
+      for lootId, cooldownEnd in pairs(lootTable) do
+        if cooldownEnd > longestTimer then
+          longestTimer = cooldownEnd
+        end
+      end
+
+      data["characters"][characterId]["coffers"][questId] = longestTimer
+    end
+
+    data["characters"][characterId]["quests"] = nil
+  end
+
+  data["version"] = 4
+end
+
 local function addonLoaded(eventCode, addonName)
   if addonName ~= "TrialsWeeklyResetTrackerExtended" then return end
 
@@ -296,7 +310,7 @@ local function addonLoaded(eventCode, addonName)
   --setup saved variables
   TrialsWeeklyResetTrackerExtendedSavedVariables = TrialsWeeklyResetTrackerExtendedSavedVariables or {}
   TWRTE.data = TrialsWeeklyResetTrackerExtendedSavedVariables
-  TWRTE.data["version"] = TWRTE.data["version"] or 3
+  TWRTE.data["version"] = TWRTE.data["version"] or 4
 
   if TWRTE.data["version"] == 1 then
     migrateVersion1ToVersion2(TWRTE.data)
@@ -306,9 +320,13 @@ local function addonLoaded(eventCode, addonName)
     migrateVersion2ToVersion3(TWRTE.data)
   end
 
+  if TWRTE.data["version"] == 3 then
+    migrateVersion3ToVersion4(TWRTE.data)
+  end
+
   TWRTE.data["characters"] = TWRTE.data["characters"] or {}
   TWRTE.data["characters"][TWRTE.characterId] = TWRTE.data["characters"][TWRTE.characterId] or {}
-  TWRTE.data["characters"][TWRTE.characterId]["quests"] = TWRTE.data["characters"][TWRTE.characterId]["quests"] or {}
+  TWRTE.data["characters"][TWRTE.characterId]["coffers"] = TWRTE.data["characters"][TWRTE.characterId]["coffers"] or {}
   TWRTE.data["characters"][TWRTE.characterId]["name"] = TWRTE.characterName
   TWRTE.data["characters"][TWRTE.characterId]["eventslog"] = TWRTE.data["characters"][TWRTE.characterId]["eventslog"] or {}
   TWRTE.data["characters"][TWRTE.characterId]["eventslog"]["config"] = TWRTE.data["characters"][TWRTE.characterId]["eventslog"]["config"] or {}

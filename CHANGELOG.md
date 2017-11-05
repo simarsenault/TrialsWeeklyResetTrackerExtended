@@ -1,3 +1,6 @@
+## 1.4.0 (2017-11-05)
+- Normal and veteran versions of a trial now share the same timer
+
 ## 1.3.1 (2017-10-29)
 - Fixed nil exception on coffer loot
 
