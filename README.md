@@ -9,3 +9,6 @@ Each timer starts after the first time you complete a trial quest and received t
 ## Commands
 ### /twrte
 Display trial timers for all your characters.
+
+### /twrtedebug
+Toggle debug mode. When in debug mode, all looted items and completed quests will be logged in chat with their ID.

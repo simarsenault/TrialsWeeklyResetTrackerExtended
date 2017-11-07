@@ -130,6 +130,17 @@ function TWRTE_displayCooldownInfoInChat()
 end
 SLASH_COMMANDS["/twrte"] = TWRTE_displayCooldownInfoInChat
 
+function TWRTE_toggleDebug()
+  if TWRTE.data["debug"] then
+    d("[TWRTE] Debug mode disabled.")
+    TWRTE.data["debug"] = false
+  else
+    d("[TWRTE] Debug mode enabled.")
+    TWRTE.data["debug"] = true
+  end
+end
+SLASH_COMMANDS["/twrtedebug"] = TWRTE_toggleDebug
+
 local function logEvent(event)
   if not TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][TWRTE.characterId]["eventslog"]["config"]["enabled"] then return end
 
@@ -219,6 +230,10 @@ local function lootReceived(eventCode, receivedBy, itemName, quantity, itemSound
   --only continue if the event was triggered for the player
   if not receivedBySelf then return end
 
+  if TWRTE.data["debug"] then
+    d("[TWRTE] Looted "..itemName.." ("..itemId..") x"..quantity)
+  end
+
   --if it is an item we're interested in
   if TWRTE.lootIds[itemId] then
     logEvent(GetTimeStamp()..": looted "..quantity.." "..itemName.." ("..itemId..")")
@@ -238,10 +253,14 @@ local function questRemoved(eventCode, isCompleted, journalIndex, questName, zon
   --only continue if quest is complete
   if not isCompleted then return end
 
+  local questName = GetCompletedQuestInfo(questId)
+
+  if TWRTE.data["debug"] then
+    d("[TWRTE] Completed quest "..questName.." ("..questId..")")
+  end
+
   --if it is a quest we're interested in
   if TWRTE.questIds[questId] then
-    local questName = GetCompletedQuestInfo(questId)
-
     logEvent(GetTimeStamp()..": completed quest "..questName.." ("..questId..")")
 
     --save timestamp and the questId
@@ -302,6 +321,12 @@ local function migrateVersion3ToVersion4(data)
   data["version"] = 4
 end
 
+local function migrateVersion4ToVersion5(data)
+  data["debug"] = false
+
+  data["version"] = 5
+end
+
 local function addonLoaded(eventCode, addonName)
   if addonName ~= "TrialsWeeklyResetTrackerExtended" then return end
 
@@ -310,7 +335,7 @@ local function addonLoaded(eventCode, addonName)
   --setup saved variables
   TrialsWeeklyResetTrackerExtendedSavedVariables = TrialsWeeklyResetTrackerExtendedSavedVariables or {}
   TWRTE.data = TrialsWeeklyResetTrackerExtendedSavedVariables
-  TWRTE.data["version"] = TWRTE.data["version"] or 4
+  TWRTE.data["version"] = TWRTE.data["version"] or 5
 
   if TWRTE.data["version"] == 1 then
     migrateVersion1ToVersion2(TWRTE.data)
@@ -324,6 +349,11 @@ local function addonLoaded(eventCode, addonName)
     migrateVersion3ToVersion4(TWRTE.data)
   end
 
+  if TWRTE.data["version"] == 4 then
+    migrateVersion4ToVersion5(TWRTE.data)
+  end
+
+  TWRTE.data["debug"] = TWRTE.data["debug"] or false
   TWRTE.data["characters"] = TWRTE.data["characters"] or {}
   TWRTE.data["characters"][TWRTE.characterId] = TWRTE.data["characters"][TWRTE.characterId] or {}
   TWRTE.data["characters"][TWRTE.characterId]["coffers"] = TWRTE.data["characters"][TWRTE.characterId]["coffers"] or {}

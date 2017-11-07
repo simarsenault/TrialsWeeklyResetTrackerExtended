@@ -1,3 +1,6 @@
+## 1.5.0 (2017-11-06)
+- Added /twrtedebug to output all looted items and completed quests with their ID
+
 ## 1.4.0 (2017-11-05)
 - Normal and veteran versions of a trial now share the same timer
 
