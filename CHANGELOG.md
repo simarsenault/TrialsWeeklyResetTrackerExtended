@@ -1,3 +1,7 @@
+## 1.5.1 (2017-11-12)
+- Fixed typo in trial name "Aetherian Archive" (Thanks to BrightOblivion)
+- Halls of Fabrication timer should now work (Thanks to BrightOblivion)
+
 ## 1.5.0 (2017-11-06)
 - Added /twrtedebug to output all looted items and completed quests with their ID
 

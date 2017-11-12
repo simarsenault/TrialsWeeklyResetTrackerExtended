@@ -33,6 +33,8 @@ TWRTE.lootIds = {
   [87706] = "",
   [94089] = "",
   [94090] = "",
+  [126130] = "",
+  [126131] = "",
   [134585] = "",
   [134586] = "",
 }
@@ -73,7 +75,7 @@ end
 local function getTrialName(questId)
   local lookup = {
     [5087] = "Hel Ra Citadel",
-    [5102] = "Atherian Archive",
+    [5102] = "Aetherian Archive",
     [5171] = "Sanctum Ophidia",
     [5352] = "Maw of Lorkaj",
     [5894] = "Halls of Fabrication",
@@ -162,7 +164,7 @@ local function updateCooldownInfo()
       [87703] = "", --Warrior's Dulled Coffer
       [87708] = "", --Warrior's Honed Coffer
     },
-    --Atherian Archive, "The Mage's Tower"
+    --Aetherian Archive, "The Mage's Tower"
     [5102] = {
       [87702] = "", --Mage's Ignorant Coffer
       [87707] = "", --Mage's Knowledgeable Coffer

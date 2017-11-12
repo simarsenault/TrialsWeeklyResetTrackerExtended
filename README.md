@@ -3,6 +3,9 @@
 ## Original Author
 This addon is based on [Trials Weekly Reset Tracker](http://www.esoui.com/downloads/info1469-TrialsWeeklyResetTracker.html) by [Randactyl](http://www.esoui.com/downloads/author-4309.html).
 
+## Special Thanks
+- [BrightOblivion](http://www.esoui.com/forums/member.php?userid=33721) for spotting the Halls of Fabrication timer bug (fixed in 1.5.1)
+
 ## How It Works
 Each timer starts after the first time you complete a trial quest and received the corresponding loot per character.
 
