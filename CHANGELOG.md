@@ -1,3 +1,6 @@
+## 1.6.0 (2018-03-04)
+- API bump: 100022
+
 ## 1.5.1 (2017-11-12)
 - Fixed typo in trial name "Aetherian Archive" (Thanks to BrightOblivion)
 - Halls of Fabrication timer should now work (Thanks to BrightOblivion)

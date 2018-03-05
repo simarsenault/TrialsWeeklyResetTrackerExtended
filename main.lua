@@ -94,12 +94,9 @@ local function getCooldownInfo()
 
     --for each quest saved to this character's cooldown data
     for questId, cooldownEnd in pairs(TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["coffers"]) do
-      --get and output the quest name
       local trialName = getTrialName(questId)
-
       local currentTime = GetTimeStamp()
 
-      --output message based on cooldown state
       if cooldownEnd <= currentTime then
         cooldownInfo[TrialsWeeklyResetTrackerExtendedSavedVariables["characters"][characterId]["name"]][trialName] = 0
       else
