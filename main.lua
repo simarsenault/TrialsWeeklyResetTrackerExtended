@@ -21,6 +21,7 @@ TWRTE.questIds = {
   [5352] = "",
   [5894] = "",
   [6090] = "",
+  [6192] = ""
 }
 TWRTE.lootIds = {
   [87703] = "",
@@ -37,6 +38,8 @@ TWRTE.lootIds = {
   [126131] = "",
   [134585] = "",
   [134586] = "",
+  [138711] = "",
+  [138712] = ""
 }
 
 --saved data
@@ -79,7 +82,8 @@ local function getTrialName(questId)
     [5171] = "Sanctum Ophidia",
     [5352] = "Maw of Lorkaj",
     [5894] = "Halls of Fabrication",
-    [6090] = "Asylum Sanctorium"
+    [6090] = "Asylum Sanctorium",
+	[6192] = "Cloudrest"
   }
 
   return lookup[questId]
@@ -159,35 +163,39 @@ local function updateCooldownInfo()
     --Hel Ra Citadel, "Assaulting the Citadel"
     [5087] = {
       [87703] = "", --Warrior's Dulled Coffer
-      [87708] = "", --Warrior's Honed Coffer
+      [87708] = "" --Warrior's Honed Coffer
     },
     --Aetherian Archive, "The Mage's Tower"
     [5102] = {
       [87702] = "", --Mage's Ignorant Coffer
-      [87707] = "", --Mage's Knowledgeable Coffer
+      [87707] = "" --Mage's Knowledgeable Coffer
     },
     --Sanctum Ophidia, "The Oldest Ghost"
     [5171] = {
       [81187] = "", --Serpent's Languid Coffer
       [81188] = "", --Serpent's Coiled Coffer
       [87705] = "", --Serpent's Languid Coffer
-      [87706] = "", --Serpent's Coiled Coffer
+      [87706] = "" --Serpent's Coiled Coffer
     },
     --Maw of Lorkaj, "Into the Maw"
     [5352] = {
       [94089] = "", --Dro-m'Athra's Burnished Coffer
-      [94090] = "", --Dro-m'Athra's Shining Coffer
+      [94090] = "" --Dro-m'Athra's Shining Coffer
     },
     --Halls of Fabrication, "Forging the Future"
     [5894] = {
       [126130] = "", --Fabricant's Burnished Coffer
-      [126131] = "", --Fabricant's Shining Coffer
+      [126131] = "" --Fabricant's Shining Coffer
     },
     --Asylum Sanctorium, "Saint's Mercy"
     [6090] = {
       [134585] = "", --Saint's Beatified Coffer
-      [134586] = "", --Saint's Sanctified Coffer
-    }
+      [134586] = "" --Saint's Sanctified Coffer
+    },
+	[6192] = {
+	  [138711] = "", -- Welkynar's Grounded Coffer
+	  [138712] = "" -- Welkynar's Soaring Coffer
+	}
   }
 
   --only continue if both quest and loot ids are initialized

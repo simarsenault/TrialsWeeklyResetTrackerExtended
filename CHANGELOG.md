@@ -1,3 +1,7 @@
+## 1.7.0 (2018-06-06)
+- New supported trial: Cloudrest (Thanks to seganku)
+- API bump: 100023
+
 ## 1.6.0 (2018-03-04)
 - API bump: 100022
 
