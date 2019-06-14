@@ -1,3 +1,7 @@
+-- New Trials need to be added in three places: 1. TWRTE.questIds near the top, 2. lookup in getTrialName(questId), 3. lookup in updateCooldownInfo()
+-- New Coffers need to be added in two places: 1. TWRTE.lootIds near the top, 2. lookup in updateCooldownInfo()
+-- Item IDs for coffers have been known to change.
+
 --namespace
 TrialsWeeklyResetTrackerExtended = {}
 local TWRTE = TrialsWeeklyResetTrackerExtended
@@ -15,31 +19,48 @@ TWRTE.characterName = zo_strformat("<<1>>",GetRawUnitName("player"))
 TWRTE.lastQuestId = nil
 TWRTE.lastLootId = nil
 TWRTE.questIds = {
-  [5087] = "",
-  [5102] = "",
-  [5171] = "",
-  [5352] = "",
-  [5894] = "",
-  [6090] = "",
-  [6192] = ""
+  [5087] = "", -- Hel Ra Citadel, "Assaulting the Citadel"
+  [5102] = "", -- Aetherian Archive, "The Mage's Tower"
+  [5171] = "", -- Sanctum Ophidia, "The Oldest Ghost"
+  [5352] = "", -- Maw of Lorkaj, "Into the Maw"
+  [5894] = "", -- Halls of Fabrication, "Forging the Future"
+  [6090] = "", -- Asylum Sanctorium, "Saint's Mercy"
+  [6192] = "", -- Cloudrest, "Woe of the Welkynars"
+  [6353] = ""  -- Sunspire, "The Return of Alkosh" (MD)
 }
 TWRTE.lootIds = {
-  [87703] = "",
-  [87708] = "",
-  [87702] = "",
-  [87707] = "",
-  [81187] = "",
-  [81188] = "",
-  [87705] = "",
-  [87706] = "",
-  [94089] = "",
-  [94090] = "",
-  [126130] = "",
-  [126131] = "",
-  [134585] = "",
-  [134586] = "",
-  [138711] = "",
-  [138712] = ""
+      [87703] = "", --Warrior's Dulled Coffer
+      [87708] = "", --Warrior's Honed Coffer
+      [139665] = "", --Warrior's Dulled Coffer
+      [139669] = "", --Warrior's Honed Coffer
+      [87702] = "", --Mage's Ignorant Coffer
+      [87707] = "", --Mage's Knowledgeable Coffer
+      [139664] = "", --Mage's Ignorant Coffer
+      [139668] = "", --Mage's Knowledgeable Coffer
+      [81187] = "", --Serpent's Languid Coffer
+      [81188] = "", --Serpent's Coiled Coffer
+      [87705] = "", --Serpent's Languid Coffer
+      [87706] = "", --Serpent's Coiled Coffer
+      [139666] = "", --Serpent's Languid Coffer
+      [139667] = "", --Serpent's Coiled Coffer
+      [94089] = "", --Dro-m'Athra's Burnished Coffer
+      [94090] = "", --Dro-m'Athra's Shining Coffer
+      [139670] = "", --Dro-m'Athra's Burnished Coffer
+      [139671] = "", --Dro-m'Athra's Shining Coffer
+      [126130] = "", --Fabricant's Burnished Coffer
+      [126131] = "", --Fabricant's Shining Coffer
+      [139672] = "", --Fabricant's Burnished Coffer
+      [139673] = "", --Fabricant's Shining Coffer
+      [134585] = "", --Saint's Beatified Coffer
+      [134586] = "", --Saint's Sanctified Coffer
+      [139674] = "", --Saint's Beatified Coffer
+      [139675] = "", --Saint's Sanctified Coffer
+      [138711] = "", -- Welkynar's Grounded Coffer
+      [138712] = "", -- Welkynar's Soaring Coffer
+      [141738] = "", -- Welkynar's Grounded Coffer
+      [141739] = "", -- Welkynar's Soaring Coffer
+	  [151970] = "", -- Dragon God's Time-Worn Hoard
+	  [151971] = "" -- Dragon God's Perfected Hoard
 }
 
 --saved data
@@ -83,7 +104,8 @@ local function getTrialName(questId)
     [5352] = "Maw of Lorkaj",
     [5894] = "Halls of Fabrication",
     [6090] = "Asylum Sanctorium",
-	[6192] = "Cloudrest"
+	[6192] = "Cloudrest",
+	[6353] = "Sunspire"
   }
 
   return lookup[questId]
@@ -163,38 +185,58 @@ local function updateCooldownInfo()
     --Hel Ra Citadel, "Assaulting the Citadel"
     [5087] = {
       [87703] = "", --Warrior's Dulled Coffer
-      [87708] = "" --Warrior's Honed Coffer
+      [87708] = "", --Warrior's Honed Coffer
+      [139665] = "", --Warrior's Dulled Coffer
+      [139669] = "" --Warrior's Honed Coffer
     },
     --Aetherian Archive, "The Mage's Tower"
     [5102] = {
       [87702] = "", --Mage's Ignorant Coffer
-      [87707] = "" --Mage's Knowledgeable Coffer
+      [87707] = "", --Mage's Knowledgeable Coffer
+      [139664] = "", --Mage's Ignorant Coffer
+      [139668] = "" --Mage's Knowledgeable Coffer
     },
     --Sanctum Ophidia, "The Oldest Ghost"
     [5171] = {
       [81187] = "", --Serpent's Languid Coffer
       [81188] = "", --Serpent's Coiled Coffer
       [87705] = "", --Serpent's Languid Coffer
-      [87706] = "" --Serpent's Coiled Coffer
+      [87706] = "", --Serpent's Coiled Coffer
+      [139666] = "", --Serpent's Languid Coffer
+      [139667] = "" --Serpent's Coiled Coffer
     },
     --Maw of Lorkaj, "Into the Maw"
     [5352] = {
       [94089] = "", --Dro-m'Athra's Burnished Coffer
-      [94090] = "" --Dro-m'Athra's Shining Coffer
+      [94090] = "", --Dro-m'Athra's Shining Coffer
+      [139670] = "", --Dro-m'Athra's Burnished Coffer
+      [139671] = "" --Dro-m'Athra's Shining Coffer
     },
     --Halls of Fabrication, "Forging the Future"
     [5894] = {
       [126130] = "", --Fabricant's Burnished Coffer
-      [126131] = "" --Fabricant's Shining Coffer
+      [126131] = "", --Fabricant's Shining Coffer
+      [139672] = "", --Fabricant's Burnished Coffer
+      [139673] = "" --Fabricant's Shining Coffer
     },
     --Asylum Sanctorium, "Saint's Mercy"
     [6090] = {
       [134585] = "", --Saint's Beatified Coffer
-      [134586] = "" --Saint's Sanctified Coffer
+      [134586] = "", --Saint's Sanctified Coffer
+      [139674] = "", --Saint's Beatified Coffer
+      [139675] = "" --Saint's Sanctified Coffer
     },
-	[6192] = {
-	  [138711] = "", -- Welkynar's Grounded Coffer
-	  [138712] = "" -- Welkynar's Soaring Coffer
+    -- Cloudrest, "Woe of the Welkynars"
+    [6192] = {
+      [138711] = "", -- Welkynar's Grounded Coffer
+      [138712] = "", -- Welkynar's Soaring Coffer
+      [141738] = "", -- Welkynar's Grounded Coffer
+      [141739] = "" -- Welkynar's Soaring Coffer
+    },
+    -- Sunspire, "The Return of Alkosh"
+	[6353] = {
+	  [151970] = "", -- Dragon God's Time-Worn Hoard
+	  [151971] = "" -- Dragon God's Perfected Hoard -- Guessed Item ID.
 	}
   }
 
