@@ -1,3 +1,7 @@
+## 1.8.0 (2019-06-17)
+- New supported trial: Sunspire (Thanks to macdesktops)
+- Added new coffers' ID (Thanks to macdesktops)
+
 ## 1.7.0 (2018-06-06)
 - New supported trial: Cloudrest (Thanks to seganku)
 - API bump: 100023
