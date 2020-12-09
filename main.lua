@@ -26,7 +26,8 @@ TWRTE.questIds = {
   [5894] = "", -- Halls of Fabrication, "Forging the Future"
   [6090] = "", -- Asylum Sanctorium, "Saint's Mercy"
   [6192] = "", -- Cloudrest, "Woe of the Welkynars"
-  [6353] = ""  -- Sunspire, "The Return of Alkosh" (MD)
+  [6353] = "", -- Sunspire, "The Return of Alkosh" (MD)
+  [6503] = "" -- Kyne's Aegis, "The Fight for Kyne's Aegis"
 }
 TWRTE.lootIds = {
       [87703] = "", --Warrior's Dulled Coffer
@@ -59,8 +60,10 @@ TWRTE.lootIds = {
       [138712] = "", -- Welkynar's Soaring Coffer
       [141738] = "", -- Welkynar's Grounded Coffer
       [141739] = "", -- Welkynar's Soaring Coffer
-	  [151970] = "", -- Dragon God's Time-Worn Hoard
-	  [151971] = "" -- Dragon God's Perfected Hoard
+      [151970] = "", -- Dragon God's Time-Worn Hoard
+      [151971] = "", -- Dragon God's Pristine Hoard
+      [165422] = "", -- Kyne's Mundane Coffer
+      [165421] = "" -- Kyne's Gleaming Coffer
 }
 
 --saved data
@@ -104,8 +107,9 @@ local function getTrialName(questId)
     [5352] = "Maw of Lorkaj",
     [5894] = "Halls of Fabrication",
     [6090] = "Asylum Sanctorium",
-	[6192] = "Cloudrest",
-	[6353] = "Sunspire"
+    [6192] = "Cloudrest",
+    [6353] = "Sunspire",
+    [6503] = "Kyne's Aegis"
   }
 
   return lookup[questId]
@@ -234,10 +238,15 @@ local function updateCooldownInfo()
       [141739] = "" -- Welkynar's Soaring Coffer
     },
     -- Sunspire, "The Return of Alkosh"
-	[6353] = {
-	  [151970] = "", -- Dragon God's Time-Worn Hoard
-	  [151971] = "" -- Dragon God's Perfected Hoard -- Guessed Item ID.
-	}
+    [6353] = {
+      [151970] = "", -- Dragon God's Time-Worn Hoard
+      [151971] = "" -- Dragon God's Pristine Hoard
+    },
+    -- Kyne's Aegis, "The Fight for Kyne's Aegis"
+    [6503] = {
+      [165422] = "", -- Kyne's Mundane Coffer
+      [165421] = "" -- Kyne's Gleaming Coffer
+    }
   }
 
   --only continue if both quest and loot ids are initialized
