@@ -1,3 +1,6 @@
+## 1.9.0 (2020-12-09)
+- Added coffers' ID for Kyne's Aegis (Thanks to drewglass)
+
 ## 1.8.0 (2019-06-17)
 - New supported trial: Sunspire (Thanks to macdesktops)
 - Added new coffers' ID (Thanks to macdesktops)
